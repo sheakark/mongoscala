@@ -5,9 +5,15 @@ import scala.collection.convert.Wrappers._
 
 class DB private(val underlying:MongoDB) {
 
-def collectionNames = for (name <- new 
-    JSetWrapper(underlying.getCollectionNames) 
-   )yield name
+	private def collection(name:String) = underlying.getCollection(name)
+	
+	def readOnlyCollection(name: String) = new DBCollection(collection(name)) 
+	def administrableCollection(name: String) = new DBCollection(collection(name)) with Administrable
+	def updatableCollection(name: String) = new DBCollection(collection(name)) with Updatable
+
+	def collectionNames = for (name <- new 
+	    JSetWrapper(underlying.getCollectionNames) 
+	   )yield name
 }
 
 object DB {
