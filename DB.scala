@@ -8,6 +8,10 @@ class DB private(val underlying:MongoDB) {
 	private def collection(name:String) = underlying.getCollection(name)
 	
 	def readOnlyCollection(name: String) = new DBCollection(collection(name)) 
+	//We are able to mixin administrable only because DBCollection also extends from ReadOnly. We cannot create
+	//a instance of DBcollection without providing the mongo collection which ReadOnly trait depends on.
+	//Adminstrable and Updatable trait extends ReadyOnly can only be mixed in with a class that also extends from ReadOnly
+	//since someone has to provide the dependency of ReadOnly before they can be mixed in
 	def administrableCollection(name: String) = new DBCollection(collection(name)) with Administrable
 	def updatableCollection(name: String) = new DBCollection(collection(name)) with Updatable
 
